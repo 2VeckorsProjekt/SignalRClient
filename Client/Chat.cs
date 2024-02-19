@@ -17,7 +17,17 @@ internal class Chat
         this.port = port;
         this.endpoint = endpoint;
 
-        this.connection = new HubConnectionBuilder().WithUrl(url).Build();
+        this.connection = new HubConnectionBuilder().WithUrl(url, (opts) =>
+        {
+            opts.HttpMessageHandlerFactory = (message) =>
+            {
+                if (message is HttpClientHandler clientHandler)
+                    // always verify the SSL certificate
+                    clientHandler.ServerCertificateCustomValidationCallback +=
+                        (sender, certificate, chain, sslPolicyErrors) => { return true; };
+                return message;
+            };
+        }).Build();
         connection.StartAsync().Wait();
 
         connection.On<string>("ReceiveMessage", (message) =>
