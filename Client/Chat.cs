@@ -2,40 +2,29 @@
 
 namespace Client;
 
-/// <summary>
-/// Klassen representerar en chattklient som ansluter till en SignalR-server.
-/// </summary>
+// Klassen representerar en chattklient som ansluter till en SignalR-server.
 internal class Chat
 {
     // Fält för att lagra anslutningsinformation
     public HubConnection connection { get; private set; } // Anslutning till SignalR-servern
-    string ip; // IP-adress till servern
-    string port; // Portnummer för servern
+    string ip;
+    string port;
     string endpoint; // SignalR-slutpunkt
-    string username; // Användarnamn för autentisering (LOGIN TEST)
-    string password; // Lösenord för autentisering (LOGIN TEST)
+    string username;
+    string password;
 
     // Hjälpvariabel för att formatera tid
     TimeOnly time = new TimeOnly();
 
-    // Bygger URL:en för anslutning
     string url => $"wss://{ip}:{port}/{endpoint}";
 
-    /// <summary\>
-    /// Konstruktor för att skapa en ny chattklient\.
-    /// </summary\>
-    /// <param name\="ip"\>IP\-adress till servern\.</param\>
-    /// <param name\="port"\>Portnummer för servern\.</param\>
-    /// <param name\="endpoint"\>SignalR\-slutpunkt\.</param\>
-    /// <param name\="username"\>Användarnamn för autentisering\.</param\>
-    /// <param name\="password"\>Lösenord för autentisering\.</param\>
     public Chat(string ip, string port, string endpoint, string username, string password)
     {
         this.ip = ip;
         this.port = port;
         this.endpoint = endpoint;
-        this.username = username; // (LOGIN TEST)
-        this.password = password; // (LOGIN TEST)
+        this.username = username;
+        this.password = password;
 
         // Skapar en ny HubConnection med URL:en och konfigurerar klienten
         this.connection = new HubConnectionBuilder().WithUrl(url, (opts) =>
@@ -54,7 +43,7 @@ internal class Chat
         // Startar anslutningen asynkront och väntar på slutförande
         connection.StartAsync().Wait();
 
-        // Autentiserar användaren mot servern (LOGIN TEST)
+        // Autentiserar användaren mot servern
         connection.InvokeAsync("Login", username, password).Wait();
 
         // Registrerar en callback för att ta emot meddelanden från servern
@@ -66,14 +55,11 @@ internal class Chat
             Console.Write("Enter message: ");
         });
 
-        // Visar en bekräftelse och startar metoden för att skicka meddelanden
         Console.WriteLine("Connected! Write 'quitchat' to exit.");
         Sender();
     }
 
-    /// <summary>
-    /// Metod för att skicka meddelanden till servern och ta emot svar.
-    /// </summary>
+    // Metod för att skicka meddelanden till servern och ta emot svar.
     void Sender()
     {
         string message = string.Empty;
@@ -81,19 +67,14 @@ internal class Chat
         // Loopar tills användaren skriver "quitchat"
         while (message != "quitchat")
         {
-            // Hämtar användarens meddelande
             message = userInput("Enter message: ");
 
             // Skickar meddelandet till servern
             connection.InvokeAsync("SendMessage", message);
         }
     }
-
-    /// <summary>
-    /// Hjälpmetod för att läsa användarinput.
-    /// </summary>
-    /// <param name="prompt">Prompt att visa till användaren.</param>
-    /// <returns>Användarens inmatade text.</returns>
+    
+    // Hjälpmetod för att läsa användarinput.
     string userInput(string prompt)
     {
         Console.Write(prompt);

@@ -4,9 +4,8 @@ namespace Client;
 
 internal class Program
 {
-    static async Task Main(string[] args) // Asynkron huvudfunktion.
-    {
-        // Hämtar användarinmatning för anslutningsuppgifter.
+    static async Task Main(string[] args)
+    {        
         string ip = userInput("Enter IP (Hampus: 92.34.183.213 - Lokal: localhost): ");
         string port = userInput("Enter port (Hampus: 80 - Lokal: 5001): ");
         string endpoint = userInput("Enter endpoint (chathub): ");
@@ -22,7 +21,7 @@ internal class Program
 
     static string userInput(string prompt) // Metod för att hämta användarinmatning.
     {
-        Console.Write(prompt); // Skriver ut prompten.
-        return Console.ReadLine(); // Läser inmatningen och returnerar den.
+        Console.Write(prompt);
+        return Console.ReadLine();
     }
 }
